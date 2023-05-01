@@ -6,6 +6,7 @@ import com.mbronshteyn.usermanagement.service.UserService;
 import io.beanmapper.BeanMapper;
 import io.beanmapper.config.BeanMapperBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,15 +48,23 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserRest>> getAllUsers() {
-        return ResponseEntity.ok().body(userService.getUsers().stream()
+        return ResponseEntity.ok().body(userService.getUsersOrderByLastName().stream()
                 .map(s -> new BeanMapperBuilder().build().map(s, UserRest.class))
                 .collect(Collectors.toList()));
     }
 
 
-    @DeleteMapping
-    public String deleteUser() {
-        return "delete student was called";
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteUser(@PathVariable String id) {
+        ResponseEntity res;
+        int result = userService.deleteByUserId(id);
+
+        if (result == 1) {
+            res = ResponseEntity.noContent().build();
+        } else {
+            res = ResponseEntity.notFound().build();
+        }
+        return res;
     }
 
 }
