@@ -2,16 +2,21 @@ package com.mbronshteyn.usermanagement.service;
 
 import com.mbronshteyn.usermanagement.entity.UserEntity;
 import com.mbronshteyn.usermanagement.model.dto.UserDto;
+import com.mbronshteyn.usermanagement.model.request.UserRest;
 import com.mbronshteyn.usermanagement.repository.UserRepository;
 import io.beanmapper.BeanMapper;
+import io.beanmapper.config.BeanMapperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -46,8 +51,14 @@ public class UserService {
      *
      * @return
      */
-    public Collection<Object> getUsersOrderByLastName() {
-        return Collections.EMPTY_LIST;
+    public List<UserDto> getUsersOrderByLastName() {
+        Sort sort = Sort.by(Sort.Direction.ASC, "lastName");
+        List<UserEntity> users = userRepository.findAll(sort);
+
+        return users.stream()
+                .map(s -> new BeanMapperBuilder().build().map(s, UserDto.class))
+                .collect(Collectors.toList());
+
     }
 
     public Optional<UserDto> findUserById(String userId) {

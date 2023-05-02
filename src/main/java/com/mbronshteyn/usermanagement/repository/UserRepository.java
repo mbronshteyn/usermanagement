@@ -1,6 +1,7 @@
 package com.mbronshteyn.usermanagement.repository;
 
 import com.mbronshteyn.usermanagement.entity.UserEntity;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +14,5 @@ public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
     int deleteDistinctByUserId(String userId);
 
-
+    List<UserEntity> findAll(Sort sort);
 }
