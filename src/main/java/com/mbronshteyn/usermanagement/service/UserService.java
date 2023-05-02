@@ -22,12 +22,16 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserService {
 
-    private final UserRepository userRepository;
+    private UserRepository userRepository;
 
-    private final BeanMapper beanMapper;
+    private BeanMapper beanMapper;
 
     public UserService(UserRepository userRepository, BeanMapper beanMapper) {
         this.userRepository = userRepository;
+        this.beanMapper = beanMapper;
+    }
+
+    protected final  void setBeanMapper(BeanMapper beanMapper) {
         this.beanMapper = beanMapper;
     }
 
@@ -61,6 +65,12 @@ public class UserService {
 
     }
 
+    /**
+     * Find user by user id in client request
+     *
+     * @param userId
+     * @return
+     */
     public Optional<UserDto> findUserById(String userId) {
         UserEntity byUserId = userRepository.findByUserId(userId);
 
@@ -71,6 +81,12 @@ public class UserService {
         }
     }
 
+    /**
+     * Delete user by id which is specified in client request
+     *
+     * @param userId
+     * @return
+     */
     @Transactional
     public int deleteByUserId(String userId) {
         return userRepository.deleteDistinctByUserId(userId);
