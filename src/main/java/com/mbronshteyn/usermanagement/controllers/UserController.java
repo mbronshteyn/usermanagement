@@ -1,20 +1,24 @@
 package com.mbronshteyn.usermanagement.controllers;
 
 import com.mbronshteyn.usermanagement.model.dto.UserDto;
+import com.mbronshteyn.usermanagement.model.request.ErrorResponse;
 import com.mbronshteyn.usermanagement.model.request.UserRest;
 import com.mbronshteyn.usermanagement.service.UserService;
 import io.beanmapper.BeanMapper;
 import io.beanmapper.config.BeanMapperBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+@Slf4j
 @RequestMapping("/users")
 public class UserController {
 
@@ -29,14 +33,27 @@ public class UserController {
 
 
     @PostMapping
-    public ResponseEntity<UserRest> createUser(@RequestBody UserRest userRest) {
+    public ResponseEntity<?> createUser(@RequestBody UserRest userRest) {
 
-        UserDto userDto = beanMapper.map(userRest, UserDto.class);
+        try {
+            UserDto userDto = beanMapper.map(userRest, UserDto.class);
 
-        UserDto response = userService.createUser(userDto);
+            UserDto response = userService.createUser(userDto);
 
-        return ResponseEntity.ok()
-                .body(beanMapper.map(response, UserRest.class));
+            log.info("Creating user {}", userRest.toString());
+
+            return ResponseEntity.ok()
+                    .body(beanMapper.map(response, UserRest.class));
+        } catch (Exception e) {
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .errorMessage(e.getMessage())
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR.name())
+                    .timeStamp(Instant.now().toString())
+                    .build();
+            log.error("Error creating user: {} : {}", userRest.toString(), e.getMessage());
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+
     }
 
     @GetMapping("/{id}")
