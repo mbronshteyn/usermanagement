@@ -60,7 +60,7 @@ public class UserService {
         List<UserEntity> users = userRepository.findAll(sort);
 
         return users.stream()
-                .map(s -> new BeanMapperBuilder().build().map(s, UserDto.class))
+                .map(s -> beanMapper.map(s, UserDto.class))
                 .collect(Collectors.toList());
 
     }

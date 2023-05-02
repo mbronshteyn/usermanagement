@@ -14,7 +14,10 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,10 +39,12 @@ class UserServiceTest {
 
     UserDto userDto;
     UserEntity userEntity;
+    UserEntity userEntityB;
 
     @BeforeEach
     void setUp() {
 
+        // workaround to get bean mapper into user service
         userService.setBeanMapper(beanMapper);
 
         userDto = new UserDto();
@@ -51,6 +56,11 @@ class UserServiceTest {
         userEntity.setUserId("123");
         userEntity.setFirstName("Joe");
         userEntity.setLastName("Doe");
+
+        userEntityB = new UserEntity();
+        userEntityB.setUserId("1234");
+        userEntityB.setFirstName("Jane");
+        userEntityB.setLastName("Dove");
     }
 
     @AfterEach
@@ -74,6 +84,21 @@ class UserServiceTest {
 
     @Test
     void getUsersOrderByLastName() {
+        List<UserEntity> userEntityList = new ArrayList<>();
+        userEntityList.add(userEntity);
+        userEntityList.add(userEntityB);
+
+        Sort sort = Sort.by(Sort.Direction.ASC, "lastName");
+
+        doReturn(userEntityList).when(mockUserRepository).findAll(sort);
+
+        List<UserDto> usersOrderByLastName = userService.getUsersOrderByLastName();
+
+        verify(mockUserRepository, times(1)).findAll(sort);
+
+        assertEquals(2, usersOrderByLastName.size());
+
+        assertEquals(userEntity.getUserId(),usersOrderByLastName.get(0).getUserId());
     }
 
     @Test
@@ -83,7 +108,7 @@ class UserServiceTest {
 
         Optional<UserDto> userByIdOptional = userService.findUserById("123");
 
-        verify(mockUserRepository).findByUserId("123");
+        verify(mockUserRepository, times(1)).findByUserId("123");
 
         assertTrue(userByIdOptional.isPresent());
         assertEquals("123", userByIdOptional.get().getUserId());
@@ -96,12 +121,19 @@ class UserServiceTest {
 
         Optional<UserDto> userByIdOptional = userService.findUserById("123");
 
-        verify(mockUserRepository).findByUserId("123");
+        verify(mockUserRepository, times(1)).findByUserId("123");
 
         assertFalse(userByIdOptional.isPresent());
     }
 
     @Test
     void deleteByUserId() {
+        when(mockUserRepository.deleteDistinctByUserId("123")).thenReturn(1);
+
+        int result = userService.deleteByUserId("123");
+
+        verify(mockUserRepository, times(1)).deleteDistinctByUserId("123");
+
+        assertEquals(1, result);
     }
 }
