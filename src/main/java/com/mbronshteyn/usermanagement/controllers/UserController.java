@@ -31,7 +31,6 @@ public class UserController {
         this.beanMapper = beanMapper;
     }
 
-
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody UserRest userRest) {
 
@@ -53,11 +52,11 @@ public class UserController {
             log.error("Error creating user: {} : {}", userRest.toString(), e.getMessage());
             return ResponseEntity.internalServerError().body(errorResponse);
         }
-
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserRest> getUserById(@PathVariable String id) {
+        log.info("getUserById: {}", id);
         Optional<UserDto> userDto = userService.findUserById(id);
         return userDto.map(dto -> ResponseEntity.ok(beanMapper.map(dto, UserRest.class)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -66,7 +65,8 @@ public class UserController {
     @GetMapping
     public ResponseEntity<List<UserRest>> getAllUsers() {
         return ResponseEntity.ok().body(userService.getUsersOrderByLastName().stream()
-                .map(s -> new BeanMapperBuilder().build().map(s, UserRest.class))
+                .map(s -> beanMapper.map(s, UserRest.class))
+                .peek(user -> log.info("returning user: {}", user.toString()))
                 .collect(Collectors.toList()));
     }
 
@@ -78,10 +78,11 @@ public class UserController {
 
         if (result == 1) {
             res = ResponseEntity.noContent().build();
+            log.info("user {} deleted successfully", id);
         } else {
             res = ResponseEntity.notFound().build();
+            log.info("user {} was not found", id);
         }
         return res;
     }
-
 }
