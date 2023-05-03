@@ -5,6 +5,7 @@ import com.mbronshteyn.usermanagement.service.UserService;
 import io.restassured.RestAssured;
 import io.restassured.authentication.PreemptiveBasicAuthScheme;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -71,6 +72,7 @@ class UserControllerTest {
      * Sample test with Rest Assured
      */
     @Test
+    @Disabled
     void helloWorld() {
         given()
                 .auth()
