@@ -17,7 +17,7 @@
 					"basic": [
 						{
 							"key": "password",
-							"value": "",
+							"value": "root",
 							"type": "string"
 						},
 						{

@@ -9,7 +9,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRest {
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     String userId;
     String firstName;
     String lastName;
