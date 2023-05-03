@@ -2,16 +2,16 @@ package com.mbronshteyn.usermanagement.controllers;
 
 import com.mbronshteyn.usermanagement.model.request.UserRest;
 import com.mbronshteyn.usermanagement.service.UserService;
+import io.restassured.RestAssured;
+import io.restassured.authentication.PreemptiveBasicAuthScheme;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.is;
 
 @SpringBootTest
 class UserControllerTest {
@@ -25,6 +25,11 @@ class UserControllerTest {
 
     @BeforeEach
     public void setup() {
+
+        RestAssured.port = 8080;
+        PreemptiveBasicAuthScheme authScheme = new PreemptiveBasicAuthScheme();
+        authScheme.setUserName("root");
+        authScheme.setPassword("root");
         // init data
         userRestJoe = UserRest.builder()
                 .userId("123")
@@ -43,6 +48,7 @@ class UserControllerTest {
                 .firstName("Jack")
                 .lastName("Xyz")
                 .build();
+
     }
 
     @Test
@@ -59,5 +65,19 @@ class UserControllerTest {
 
     @Test
     void deleteUser() {
+    }
+
+    /**
+     * Sample test with Rest Assured
+     */
+    @Test
+    void helloWorld() {
+        given()
+                .auth()
+                .preemptive()
+                .basic("root", "root")
+                .when().get("/users/hello")
+                .then()
+                .statusCode(200);
     }
 }

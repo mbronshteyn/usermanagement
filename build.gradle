@@ -36,6 +36,11 @@ dependencies {
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
 
+	testImplementation 'io.rest-assured:rest-assured-all'
+	// https://mvnrepository.com/artifact/io.rest-assured/rest-assured
+	testImplementation 'io.rest-assured:rest-assured'
+
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
