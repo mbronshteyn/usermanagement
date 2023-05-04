@@ -23,6 +23,8 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 
 
+import java.util.Optional;
+
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.port;
 import static org.hamcrest.Matchers.is;
@@ -66,23 +68,11 @@ class UserControllerTest {
         authScheme.setUserName("root");
         authScheme.setPassword("root");
         // init data
-        userRestJoe = UserRest.builder()
-                .userId("123")
-                .firstName("Joe")
-                .lastName("Abc")
-                .build();
+        userRestJoe = UserRest.builder().userId("123").firstName("Joe").lastName("Abc").build();
 
-        userRestJane = UserRest.builder()
-                .userId("456")
-                .firstName("Jane")
-                .lastName("Cdf")
-                .build();
+        userRestJane = UserRest.builder().userId("456").firstName("Jane").lastName("Cdf").build();
 
-        userRestJack = UserRest.builder()
-                .userId("789")
-                .firstName("Jack")
-                .lastName("Xyz")
-                .build();
+        userRestJack = UserRest.builder().userId("789").firstName("Jack").lastName("Xyz").build();
 
         userDto = new UserDto();
         userDto.setUserId("1234");
@@ -118,7 +108,6 @@ class UserControllerTest {
         Assertions.assertEquals(userDto.getUserId(), actualUserId);
         Assertions.assertEquals(userDto.getFirstName(), actualFirstName);
         Assertions.assertEquals(userDto.getLastName(), actualLastName);
-
     }
 
     @Test
@@ -145,6 +134,33 @@ class UserControllerTest {
 
     @Test
     public void getUserById() {
+
+        String userId = userDto.getUserId();
+
+        Mockito.when(mockUserService.findUserById(userDto.getUserId()))
+                .thenReturn(Optional.of(userDto));
+
+        Response response = given()
+                .auth()
+                .preemptive()
+                .basic("root", "root")
+                .contentType("application/json")
+                .accept("application/json")
+                .when()
+                .get("/users/" + userId)
+                .then()
+                .statusCode(200)
+                .contentType("application/json")
+                .extract()
+                .response();
+
+        String actualUserId = response.jsonPath().getString("userId");
+        String actualFirstName = response.jsonPath().getString("firstName");
+        String actualLastName = response.jsonPath().getString("lastName");
+
+        Assertions.assertEquals(userDto.getUserId(), actualUserId);
+        Assertions.assertEquals(userDto.getFirstName(), actualFirstName);
+        Assertions.assertEquals(userDto.getLastName(), actualLastName);
     }
 
     @Test
@@ -160,12 +176,6 @@ class UserControllerTest {
      */
     @Test
     public void helloWorld() {
-        given()
-                .auth()
-                .preemptive()
-                .basic("root", "root")
-                .when().get("/users/hello")
-                .then()
-                .statusCode(200);
+        given().auth().preemptive().basic("root", "root").when().get("/users/hello").then().statusCode(200);
     }
 }
