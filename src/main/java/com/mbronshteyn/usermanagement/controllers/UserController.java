@@ -34,8 +34,6 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody UserRest userRest) {
 
-        log.info("inside controller");
-
         try {
             UserDto userDto = beanMapper.map(userRest, UserDto.class);
 

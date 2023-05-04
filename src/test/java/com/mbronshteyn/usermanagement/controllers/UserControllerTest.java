@@ -1,5 +1,7 @@
 package com.mbronshteyn.usermanagement.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mbronshteyn.usermanagement.model.dto.UserDto;
 import com.mbronshteyn.usermanagement.model.request.UserRest;
 import com.mbronshteyn.usermanagement.service.UserService;
 import io.restassured.RestAssured;
@@ -7,19 +9,27 @@ import io.restassured.authentication.PreemptiveBasicAuthScheme;
 import io.restassured.config.SSLConfig;
 import io.restassured.response.Response;
 import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.MediaType;
 
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.port;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 
+@ExtendWith(MockitoExtension.class)
+@RunWith(MockitoJUnitRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserControllerTest {
 
@@ -31,9 +41,14 @@ class UserControllerTest {
     UserRest userRestJoe;
     UserRest userRestJane;
     UserRest userRestJack;
+    
+    ObjectMapper objectMapper = new ObjectMapper();
 
-    @Mock
+    @MockBean
     UserService mockUserService;
+
+    @InjectMocks
+    UserController userController;
 
     public void configureRestAssured() {
         RestAssured.baseURI = BASE_URI;
@@ -70,7 +85,38 @@ class UserControllerTest {
     }
 
     @Test
-    public void createUser() {
+    public void createUser() throws Exception {
+
+        UserDto userDto = new UserDto();
+        userDto.setUserId("1234");
+        userDto.setFirstName("Joe");
+        userDto.setLastName("Doe");
+
+        Mockito.doReturn(userDto).when(mockUserService).createUser(any());
+
+        Response response = given()
+                .auth()
+                .preemptive()
+                .basic("root", "root")
+                .contentType("application/json")
+                .accept("application/json")
+                .body(objectMapper.writer().writeValueAsString(userRestJack).getBytes())
+                .when()
+                .post("/users")
+                .then()
+                .statusCode(200)
+                .contentType("application/json")
+                .extract()
+                .response();
+
+        String actualUserId = response.jsonPath().getString("userId");
+        String actualFirstName = response.jsonPath().getString("firstName");
+        String actualLastName = response.jsonPath().getString("lastName");
+
+        Assertions.assertEquals(userDto.getUserId(), actualUserId);
+        Assertions.assertEquals(userDto.getFirstName(), actualFirstName);
+        Assertions.assertEquals(userDto.getLastName(), actualLastName);
+
     }
 
     @Test
