@@ -4,18 +4,29 @@ import com.mbronshteyn.usermanagement.model.request.UserRest;
 import com.mbronshteyn.usermanagement.service.UserService;
 import io.restassured.RestAssured;
 import io.restassured.authentication.PreemptiveBasicAuthScheme;
+import io.restassured.config.SSLConfig;
+import io.restassured.response.Response;
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.port;
 import static org.hamcrest.Matchers.is;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class UserControllerTest {
+
+    private final static String BASE_URI = "http://localhost";
+
+    @LocalServerPort
+    private int port;
 
     UserRest userRestJoe;
     UserRest userRestJane;
@@ -24,10 +35,16 @@ class UserControllerTest {
     @Mock
     UserService mockUserService;
 
+    public void configureRestAssured() {
+        RestAssured.baseURI = BASE_URI;
+        RestAssured.port = port;
+    }
+
     @BeforeEach
     public void setup() {
 
-        RestAssured.port = 8080;
+        configureRestAssured();
+
         PreemptiveBasicAuthScheme authScheme = new PreemptiveBasicAuthScheme();
         authScheme.setUserName("root");
         authScheme.setPassword("root");
@@ -53,27 +70,26 @@ class UserControllerTest {
     }
 
     @Test
-    void createUser() {
+    public void createUser() {
     }
 
     @Test
-    void getUserById() {
+    public void getUserById() {
     }
 
     @Test
-    void getAllUsers() {
+    public void getAllUsers() {
     }
 
     @Test
-    void deleteUser() {
+    public void deleteUser() {
     }
 
     /**
      * Sample test with Rest Assured
      */
     @Test
-    @Disabled
-    void helloWorld() {
+    public void helloWorld() {
         given()
                 .auth()
                 .preemptive()
