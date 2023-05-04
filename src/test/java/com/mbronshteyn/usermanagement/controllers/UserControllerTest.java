@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 
@@ -161,6 +162,24 @@ class UserControllerTest {
         Assertions.assertEquals(userDto.getUserId(), actualUserId);
         Assertions.assertEquals(userDto.getFirstName(), actualFirstName);
         Assertions.assertEquals(userDto.getLastName(), actualLastName);
+    }
+
+    @Test
+    public void getUserByIdNotFound() {
+
+        String userId = userDto.getUserId();
+
+        Mockito.when(mockUserService.findUserById(userDto.getUserId()))
+                .thenReturn(Optional.empty());
+
+        given()
+                .auth()
+                .preemptive()
+                .basic("root", "root")
+                .when()
+                .get("/users/" + userId)
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
