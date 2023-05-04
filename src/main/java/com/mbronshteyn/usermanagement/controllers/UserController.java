@@ -20,17 +20,21 @@ import java.util.stream.Collectors;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserService userService;
+    private UserService userService;
 
-    private final BeanMapper beanMapper;
+    private BeanMapper beanMapper;
 
     public UserController(UserService userService, BeanMapper beanMapper) {
         this.userService = userService;
         this.beanMapper = beanMapper;
     }
 
+
+
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody UserRest userRest) {
+
+        log.info("inside controller");
 
         try {
             UserDto userDto = beanMapper.map(userRest, UserDto.class);
