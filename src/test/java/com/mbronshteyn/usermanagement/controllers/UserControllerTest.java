@@ -27,6 +27,7 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.port;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.class)
@@ -41,7 +42,8 @@ class UserControllerTest {
     UserRest userRestJoe;
     UserRest userRestJane;
     UserRest userRestJack;
-    
+
+    UserDto userDto;
     ObjectMapper objectMapper = new ObjectMapper();
 
     @MockBean
@@ -82,17 +84,17 @@ class UserControllerTest {
                 .lastName("Xyz")
                 .build();
 
+        userDto = new UserDto();
+        userDto.setUserId("1234");
+        userDto.setFirstName("Joe");
+        userDto.setLastName("Doe");
+
     }
 
     @Test
     public void createUser() throws Exception {
 
-        UserDto userDto = new UserDto();
-        userDto.setUserId("1234");
-        userDto.setFirstName("Joe");
-        userDto.setLastName("Doe");
-
-        Mockito.doReturn(userDto).when(mockUserService).createUser(any());
+        Mockito.doReturn(userDto).when(mockUserService).createUser(any(UserDto.class));
 
         Response response = given()
                 .auth()
@@ -117,6 +119,28 @@ class UserControllerTest {
         Assertions.assertEquals(userDto.getFirstName(), actualFirstName);
         Assertions.assertEquals(userDto.getLastName(), actualLastName);
 
+    }
+
+    @Test
+    public void createUserDuplicateError() throws Exception {
+
+        when(mockUserService.createUser(any(UserDto.class)))
+                .thenThrow(RuntimeException.class);
+
+        Response response = given()
+                .auth()
+                .preemptive()
+                .basic("root", "root")
+                .contentType("application/json")
+                .accept("application/json")
+                .body(objectMapper.writer().writeValueAsString(userRestJack).getBytes())
+                .when()
+                .post("/users")
+                .then()
+                .statusCode(500)
+                .contentType("application/json")
+                .extract()
+                .response();
     }
 
     @Test
