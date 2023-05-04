@@ -79,7 +79,6 @@ class UserControllerTest {
         userDto.setUserId("1234");
         userDto.setFirstName("Joe");
         userDto.setLastName("Doe");
-
     }
 
     @Test
@@ -188,6 +187,36 @@ class UserControllerTest {
 
     @Test
     public void deleteUser() {
+        String userId = userDto.getUserId();
+
+        Mockito.when(mockUserService.deleteByUserId(userDto.getUserId()))
+                .thenReturn(1);
+
+        given()
+                .auth()
+                .preemptive()
+                .basic("root", "root")
+                .when()
+                .delete("/users/" + userId)
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    public void deleteUserNoFound() {
+        String userId = userDto.getUserId();
+
+        Mockito.when(mockUserService.deleteByUserId(userDto.getUserId()))
+                .thenReturn(0);
+
+        given()
+                .auth()
+                .preemptive()
+                .basic("root", "root")
+                .when()
+                .delete("/users/" + userId)
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     /**
@@ -195,6 +224,13 @@ class UserControllerTest {
      */
     @Test
     public void helloWorld() {
-        given().auth().preemptive().basic("root", "root").when().get("/users/hello").then().statusCode(200);
+        given()
+                .auth()
+                .preemptive()
+                .basic("root", "root")
+                .when()
+                .get("/users/hello")
+                .then()
+                .statusCode(200);
     }
 }
