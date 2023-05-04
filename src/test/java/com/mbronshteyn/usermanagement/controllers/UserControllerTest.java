@@ -6,14 +6,14 @@ import com.mbronshteyn.usermanagement.model.request.UserRest;
 import com.mbronshteyn.usermanagement.service.UserService;
 import io.restassured.RestAssured;
 import io.restassured.authentication.PreemptiveBasicAuthScheme;
-import io.restassured.config.SSLConfig;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,16 +21,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.port;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @RunWith(MockitoJUnitRunner.class)
@@ -47,6 +45,9 @@ class UserControllerTest {
     UserRest userRestJack;
 
     UserDto userDto;
+    UserDto userDtoTwo;
+
+    List<UserDto> dtoList;
     ObjectMapper objectMapper = new ObjectMapper();
 
     @MockBean
@@ -79,6 +80,15 @@ class UserControllerTest {
         userDto.setUserId("1234");
         userDto.setFirstName("Joe");
         userDto.setLastName("Doe");
+
+        userDtoTwo = new UserDto();
+        userDtoTwo.setUserId("123456");
+        userDtoTwo.setFirstName("Jane");
+        userDtoTwo.setLastName("Xyz");
+
+        dtoList = new ArrayList<>();
+        dtoList.add(userDto);
+        dtoList.add(userDtoTwo);
     }
 
     @Test
@@ -100,6 +110,8 @@ class UserControllerTest {
                 .contentType("application/json")
                 .extract()
                 .response();
+
+        verify(mockUserService, times(1)).createUser(any(UserDto.class));
 
         String actualUserId = response.jsonPath().getString("userId");
         String actualFirstName = response.jsonPath().getString("firstName");
@@ -130,6 +142,8 @@ class UserControllerTest {
                 .contentType("application/json")
                 .extract()
                 .response();
+
+        verify(mockUserService, times(1)).createUser(any(UserDto.class));
     }
 
     @Test
@@ -153,6 +167,8 @@ class UserControllerTest {
                 .contentType("application/json")
                 .extract()
                 .response();
+
+        verify(mockUserService, times(1)).findUserById(userDto.getUserId());
 
         String actualUserId = response.jsonPath().getString("userId");
         String actualFirstName = response.jsonPath().getString("firstName");
@@ -179,10 +195,32 @@ class UserControllerTest {
                 .get("/users/" + userId)
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value());
+
+        verify(mockUserService, times(1)).findUserById(userDto.getUserId());
     }
 
     @Test
     public void getAllUsers() {
+
+        Mockito.doReturn(dtoList).when(mockUserService).getUsersOrderByLastName();
+
+        Response response= given()
+                .auth()
+                .preemptive()
+                .basic("root", "root")
+                .when()
+                .get("/users")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .contentType("application/json")
+                .extract()
+                .response();
+
+        verify(mockUserService, times(1)).getUsersOrderByLastName();
+
+        List<UserRest> list = response.jsonPath().get();
+
+        Assertions.assertEquals(2, list.size());
     }
 
     @Test
@@ -200,6 +238,8 @@ class UserControllerTest {
                 .delete("/users/" + userId)
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
+
+        verify(mockUserService, times(1)).deleteByUserId(userDto.getUserId());
     }
 
     @Test
@@ -217,6 +257,8 @@ class UserControllerTest {
                 .delete("/users/" + userId)
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value());
+
+        verify(mockUserService, times(1)).deleteByUserId(userDto.getUserId());
     }
 
     /**
