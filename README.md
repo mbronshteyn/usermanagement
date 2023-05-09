@@ -10,6 +10,17 @@ The project has postman collection json file which can be used to trigger endpoi
 Swagger url:
 http://localhost:8080/swagger-ui/index.html
 
+## Running project in a docker container
+
+Execute gralde command ` ./gradlew bootBuildImage`
+
+That will build the docker image `usermanagement` ( configured in build.gradle ) and will save it in local docker.
+
+To start the docker container with the project image run:  <br>
+`docker run -p 8080:8080 usermanagement`
+
+The project will be accessable on local port 8080.
+
 
 
 
