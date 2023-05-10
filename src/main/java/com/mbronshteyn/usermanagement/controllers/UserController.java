@@ -41,7 +41,7 @@ public class UserController {
 
             log.info("Creating user {}", userRest.toString());
 
-            return ResponseEntity.ok()
+            return ResponseEntity.status(HttpStatus.CREATED.value())
                     .body(beanMapper.map(response, UserRest.class));
         } catch (Exception e) {
             ErrorResponse errorResponse = ErrorResponse.builder()

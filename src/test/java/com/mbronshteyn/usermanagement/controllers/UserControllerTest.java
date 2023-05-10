@@ -106,7 +106,7 @@ class UserControllerTest {
                 .when()
                 .post("/users")
                 .then()
-                .statusCode(200)
+                .statusCode(HttpStatus.CREATED.value())
                 .contentType("application/json")
                 .extract()
                 .response();
