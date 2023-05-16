@@ -38,6 +38,8 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
+    implementation 'javax.validation:validation-api:2.0.1.Final'
+
     runtimeOnly 'com.h2database:h2'
 
     // rest assured dependency

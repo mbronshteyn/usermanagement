@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +33,7 @@ public class UserController {
 
 
     @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody UserRest userRest) {
+    public ResponseEntity<?> createUser(@RequestBody @Valid UserRest userRest) {
 
         try {
             UserDto userDto = beanMapper.map(userRest, UserDto.class);
