@@ -33,7 +33,7 @@ public class UserController {
 
 
     @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody @Valid UserRest userRest) {
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRest userRest) {
 
         try {
             UserDto userDto = beanMapper.map(userRest, UserDto.class);

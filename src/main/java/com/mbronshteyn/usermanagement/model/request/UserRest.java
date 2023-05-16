@@ -3,6 +3,7 @@ package com.mbronshteyn.usermanagement.model.request;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -11,11 +12,11 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRest {
-    @NotNull
+    @NotBlank
     String userId;
-    @NotNull
+    @NotBlank
     String firstName;
-    @NotNull
+    @NotBlank
     String lastName;
 }
 
