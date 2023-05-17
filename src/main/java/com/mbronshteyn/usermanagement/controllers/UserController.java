@@ -7,6 +7,7 @@ import com.mbronshteyn.usermanagement.service.UserService;
 import io.beanmapper.BeanMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,7 +56,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UserRest> getUserById(@PathVariable String id) {
         log.info("getUserById: {}", id);
         Optional<UserDto> userDto = userService.findUserById(id);
