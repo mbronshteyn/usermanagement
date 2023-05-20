@@ -1,10 +1,8 @@
 package com.mbronshteyn.usermanagement.model.request;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
@@ -13,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class UserRest {
     @NotBlank
-    String userId;
+    String batchNumber;
     @NotBlank
     String firstName;
     @NotBlank

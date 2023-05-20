@@ -10,9 +10,9 @@ import java.util.List;
 @Repository
 public interface UserRepository extends CrudRepository<UserEntity, Long> {
 
-    UserEntity findByUserId(String userId);
+    UserEntity findByBatchNumber(String userId);
 
-    int deleteDistinctByUserId(String userId);
+    int deleteDistinctByBatchNumber(String userId);
 
     List<UserEntity> findAll(Sort sort);
 }

@@ -6,7 +6,6 @@ import com.mbronshteyn.usermanagement.model.request.UserRest;
 import com.mbronshteyn.usermanagement.service.UserService;
 import io.restassured.RestAssured;
 import io.restassured.authentication.PreemptiveBasicAuthScheme;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,19 +69,19 @@ class UserControllerTest {
         authScheme.setUserName("root");
         authScheme.setPassword("root");
         // init data
-        userRestJoe = UserRest.builder().userId("123").firstName("Joe").lastName("Abc").build();
+        userRestJoe = UserRest.builder().batchNumber("123").firstName("Joe").lastName("Abc").build();
 
-        userRestJane = UserRest.builder().userId("456").firstName("Jane").lastName("Cdf").build();
+        userRestJane = UserRest.builder().batchNumber("456").firstName("Jane").lastName("Cdf").build();
 
-        userRestJack = UserRest.builder().userId("789").firstName("Jack").lastName("Xyz").build();
+        userRestJack = UserRest.builder().batchNumber("789").firstName("Jack").lastName("Xyz").build();
 
         userDto = new UserDto();
-        userDto.setUserId("1234");
+        userDto.setBatchNumber("1234");
         userDto.setFirstName("Joe");
         userDto.setLastName("Doe");
 
         userDtoTwo = new UserDto();
-        userDtoTwo.setUserId("123456");
+        userDtoTwo.setBatchNumber("123456");
         userDtoTwo.setFirstName("Jane");
         userDtoTwo.setLastName("Xyz");
 
@@ -117,7 +116,7 @@ class UserControllerTest {
         String actualFirstName = response.jsonPath().getString("firstName");
         String actualLastName = response.jsonPath().getString("lastName");
 
-        Assertions.assertEquals(userDto.getUserId(), actualUserId);
+        Assertions.assertEquals(userDto.getBatchNumber(), actualUserId);
         Assertions.assertEquals(userDto.getFirstName(), actualFirstName);
         Assertions.assertEquals(userDto.getLastName(), actualLastName);
     }
@@ -149,9 +148,9 @@ class UserControllerTest {
     @Test
     public void getUserById() {
 
-        String userId = userDto.getUserId();
+        String userId = userDto.getBatchNumber();
 
-        Mockito.when(mockUserService.findUserById(userDto.getUserId()))
+        Mockito.when(mockUserService.findBatchNumber(userDto.getBatchNumber()))
                 .thenReturn(Optional.of(userDto));
 
         Response response = given()
@@ -168,13 +167,13 @@ class UserControllerTest {
                 .extract()
                 .response();
 
-        verify(mockUserService, times(1)).findUserById(userDto.getUserId());
+        verify(mockUserService, times(1)).findBatchNumber(userDto.getBatchNumber());
 
         String actualUserId = response.jsonPath().getString("userId");
         String actualFirstName = response.jsonPath().getString("firstName");
         String actualLastName = response.jsonPath().getString("lastName");
 
-        Assertions.assertEquals(userDto.getUserId(), actualUserId);
+        Assertions.assertEquals(userDto.getBatchNumber(), actualUserId);
         Assertions.assertEquals(userDto.getFirstName(), actualFirstName);
         Assertions.assertEquals(userDto.getLastName(), actualLastName);
     }
@@ -182,9 +181,9 @@ class UserControllerTest {
     @Test
     public void getUserByIdNotFound() {
 
-        String userId = userDto.getUserId();
+        String userId = userDto.getBatchNumber();
 
-        Mockito.when(mockUserService.findUserById(userDto.getUserId()))
+        Mockito.when(mockUserService.findBatchNumber(userDto.getBatchNumber()))
                 .thenReturn(Optional.empty());
 
         given()
@@ -196,7 +195,7 @@ class UserControllerTest {
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value());
 
-        verify(mockUserService, times(1)).findUserById(userDto.getUserId());
+        verify(mockUserService, times(1)).findBatchNumber(userDto.getBatchNumber());
     }
 
     @Test
@@ -225,9 +224,9 @@ class UserControllerTest {
 
     @Test
     public void deleteUser() {
-        String userId = userDto.getUserId();
+        String userId = userDto.getBatchNumber();
 
-        Mockito.when(mockUserService.deleteByUserId(userDto.getUserId()))
+        Mockito.when(mockUserService.deleteByUserId(userDto.getBatchNumber()))
                 .thenReturn(1);
 
         given()
@@ -239,14 +238,14 @@ class UserControllerTest {
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
-        verify(mockUserService, times(1)).deleteByUserId(userDto.getUserId());
+        verify(mockUserService, times(1)).deleteByUserId(userDto.getBatchNumber());
     }
 
     @Test
     public void deleteUserNoFound() {
-        String userId = userDto.getUserId();
+        String userId = userDto.getBatchNumber();
 
-        Mockito.when(mockUserService.deleteByUserId(userDto.getUserId()))
+        Mockito.when(mockUserService.deleteByUserId(userDto.getBatchNumber()))
                 .thenReturn(0);
 
         given()
@@ -258,7 +257,7 @@ class UserControllerTest {
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value());
 
-        verify(mockUserService, times(1)).deleteByUserId(userDto.getUserId());
+        verify(mockUserService, times(1)).deleteByUserId(userDto.getBatchNumber());
     }
 
     /**

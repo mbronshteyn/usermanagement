@@ -17,8 +17,11 @@ public class SecurityConfig {
                         "/assets/**", "/api/channel/**", "/jobs/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
+                .headers().frameOptions().disable()
+                .and()
                 .csrf().disable()
                 .httpBasic();
+
         return http.build();
     }
 }

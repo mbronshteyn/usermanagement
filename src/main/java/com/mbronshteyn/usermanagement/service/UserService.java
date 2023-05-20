@@ -1,21 +1,16 @@
 package com.mbronshteyn.usermanagement.service;
 
+import com.mbronshteyn.usermanagement.entity.ClubEntity;
 import com.mbronshteyn.usermanagement.entity.UserEntity;
 import com.mbronshteyn.usermanagement.model.dto.UserDto;
-import com.mbronshteyn.usermanagement.model.request.UserRest;
 import com.mbronshteyn.usermanagement.repository.UserRepository;
 import io.beanmapper.BeanMapper;
-import io.beanmapper.config.BeanMapperBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -45,6 +40,17 @@ public class UserService {
 
         UserEntity userEntity = beanMapper.map(userDto, UserEntity.class);
 
+        List<ClubEntity> clubEntities = new ArrayList<>();
+        ClubEntity club = new ClubEntity();
+        club.setName("new club");
+        clubEntities.add(club);
+
+        ClubEntity clubOne = new ClubEntity();
+        clubOne.setName("new club one");
+        clubEntities.add(clubOne);
+
+        userEntity.setClubs(clubEntities);
+
         UserEntity savedEntity = userRepository.save(userEntity);
 
         return beanMapper.map(savedEntity, UserDto.class);
@@ -71,8 +77,8 @@ public class UserService {
      * @param userId
      * @return
      */
-    public Optional<UserDto> findUserById(String userId) {
-        UserEntity byUserId = userRepository.findByUserId(userId);
+    public Optional<UserDto> findBatchNumber(String userId) {
+        UserEntity byUserId = userRepository.findByBatchNumber(userId);
 
         if (byUserId == null) {
             return Optional.empty();
@@ -89,6 +95,6 @@ public class UserService {
      */
     @Transactional
     public int deleteByUserId(String userId) {
-        return userRepository.deleteDistinctByUserId(userId);
+        return userRepository.deleteDistinctByBatchNumber(userId);
     }
 }

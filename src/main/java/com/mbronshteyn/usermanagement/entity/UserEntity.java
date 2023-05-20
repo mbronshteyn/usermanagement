@@ -1,11 +1,10 @@
 package com.mbronshteyn.usermanagement.entity;
 
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,11 +21,14 @@ public class UserEntity implements Serializable {
   private long id;
 
   @Column(nullable = false)
-  private String userId;
+  private String batchNumber;
 
   @Column(nullable = false, length = 50)
   private String firstName;
 
   @Column(nullable = false, length = 50)
   private String lastName;
+
+  @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  private List<ClubEntity> clubs;
 }

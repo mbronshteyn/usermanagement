@@ -53,12 +53,12 @@ class UserServiceTest {
         userDto.setLastName("Doe");
 
         userEntity = new UserEntity();
-        userEntity.setUserId("123");
+        userEntity.setBatchNumber("123");
         userEntity.setFirstName("Joe");
         userEntity.setLastName("Doe");
 
         userEntityB = new UserEntity();
-        userEntityB.setUserId("1234");
+        userEntityB.setBatchNumber("1234");
         userEntityB.setFirstName("Jane");
         userEntityB.setLastName("Dove");
     }
@@ -98,7 +98,7 @@ class UserServiceTest {
 
         assertEquals(2, usersOrderByLastName.size());
 
-        assertEquals(userEntity.getUserId(),usersOrderByLastName.get(0).getUserId());
+        assertEquals(userEntity.getBatchNumber(),usersOrderByLastName.get(0).getUserId());
     }
 
     @Test
@@ -106,7 +106,7 @@ class UserServiceTest {
 
         when(mockUserRepository.findByUserId("123")).thenReturn(userEntity);
 
-        Optional<UserDto> userByIdOptional = userService.findUserById("123");
+        Optional<UserDto> userByIdOptional = userService.findBatchNumber("123");
 
         verify(mockUserRepository, times(1)).findByUserId("123");
 
@@ -119,7 +119,7 @@ class UserServiceTest {
 
         when(mockUserRepository.findByUserId("123")).thenReturn(null);
 
-        Optional<UserDto> userByIdOptional = userService.findUserById("123");
+        Optional<UserDto> userByIdOptional = userService.findBatchNumber("123");
 
         verify(mockUserRepository, times(1)).findByUserId("123");
 
