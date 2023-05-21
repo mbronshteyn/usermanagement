@@ -6,9 +6,9 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Entity
+@Table(name = "clubs")
 public class ClubEntity {
     @Id
     @GeneratedValue
