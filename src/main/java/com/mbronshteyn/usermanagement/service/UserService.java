@@ -41,22 +41,11 @@ public class UserService {
 
         UserEntity userEntity = beanMapper.map(userDto, UserEntity.class);
 
-//        List<ClubEntity> clubEntities = new ArrayList<>();
-//        ClubEntity club = new ClubEntity();
-//        club.setName("new club");
-//        club.setUsers(userEntity);
-//        clubEntities.add(club);
-//
-//        ClubEntity clubOne = new ClubEntity();
-//        clubOne.setName("new club one");
-//        clubOne.setUsers(userEntity);
-//        clubEntities.add(clubOne);
         List<ClubDto> clubs = userDto.getClubs();
         if (clubs != null && !clubs.isEmpty()) {
             List<ClubEntity> clubEntityList = clubs.stream()
                     .map(clubDto -> {
-                        ClubEntity clubEntity = new ClubEntity();
-                        clubEntity.setName(clubDto.getName());
+                        ClubEntity clubEntity =  beanMapper.map(clubDto, ClubEntity.class);
                         clubEntity.setUsers(userEntity);
                         return clubEntity;
                     })
