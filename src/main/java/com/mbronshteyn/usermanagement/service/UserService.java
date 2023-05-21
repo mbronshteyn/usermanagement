@@ -2,6 +2,7 @@ package com.mbronshteyn.usermanagement.service;
 
 import com.mbronshteyn.usermanagement.entity.ClubEntity;
 import com.mbronshteyn.usermanagement.entity.UserEntity;
+import com.mbronshteyn.usermanagement.model.dto.ClubDto;
 import com.mbronshteyn.usermanagement.model.dto.UserDto;
 import com.mbronshteyn.usermanagement.repository.UserRepository;
 import io.beanmapper.BeanMapper;
@@ -40,18 +41,28 @@ public class UserService {
 
         UserEntity userEntity = beanMapper.map(userDto, UserEntity.class);
 
-        List<ClubEntity> clubEntities = new ArrayList<>();
-        ClubEntity club = new ClubEntity();
-        club.setName("new club");
-        club.setUsers(userEntity);
-        clubEntities.add(club);
-
-        ClubEntity clubOne = new ClubEntity();
-        clubOne.setName("new club one");
-        clubOne.setUsers(userEntity);
-        clubEntities.add(clubOne);
-
-        userEntity.setClubs(clubEntities);
+//        List<ClubEntity> clubEntities = new ArrayList<>();
+//        ClubEntity club = new ClubEntity();
+//        club.setName("new club");
+//        club.setUsers(userEntity);
+//        clubEntities.add(club);
+//
+//        ClubEntity clubOne = new ClubEntity();
+//        clubOne.setName("new club one");
+//        clubOne.setUsers(userEntity);
+//        clubEntities.add(clubOne);
+        List<ClubDto> clubs = userDto.getClubs();
+        if (clubs != null && !clubs.isEmpty()) {
+            List<ClubEntity> clubEntityList = clubs.stream()
+                    .map(clubDto -> {
+                        ClubEntity clubEntity = new ClubEntity();
+                        clubEntity.setName(clubDto.getName());
+                        clubEntity.setUsers(userEntity);
+                        return clubEntity;
+                    })
+                    .collect(Collectors.toList());
+            userEntity.setClubs(clubEntityList);
+        }
 
         UserEntity savedEntity = userRepository.save(userEntity);
 
