@@ -112,7 +112,7 @@ class UserControllerTest {
 
         verify(mockUserService, times(1)).createUser(any(UserDto.class));
 
-        String actualUserId = response.jsonPath().getString("userId");
+        String actualUserId = response.jsonPath().getString("batchNumber");
         String actualFirstName = response.jsonPath().getString("firstName");
         String actualLastName = response.jsonPath().getString("lastName");
 
@@ -169,7 +169,7 @@ class UserControllerTest {
 
         verify(mockUserService, times(1)).findBatchNumber(userDto.getBatchNumber());
 
-        String actualUserId = response.jsonPath().getString("userId");
+        String actualUserId = response.jsonPath().getString("batchNumber");
         String actualFirstName = response.jsonPath().getString("firstName");
         String actualLastName = response.jsonPath().getString("lastName");
 
@@ -181,7 +181,7 @@ class UserControllerTest {
     @Test
     public void getUserByIdNotFound() {
 
-        String userId = userDto.getBatchNumber();
+        String batchNumber = userDto.getBatchNumber();
 
         Mockito.when(mockUserService.findBatchNumber(userDto.getBatchNumber()))
                 .thenReturn(Optional.empty());
@@ -191,7 +191,7 @@ class UserControllerTest {
                 .preemptive()
                 .basic("root", "root")
                 .when()
-                .get("/users/" + userId)
+                .get("/users/" + batchNumber)
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value());
 
