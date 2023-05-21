@@ -48,7 +48,7 @@ class UserServiceTest {
         userService.setBeanMapper(beanMapper);
 
         userDto = new UserDto();
-        userDto.setUserId("123");
+        userDto.setBatchNumber("123");
         userDto.setFirstName("Joe");
         userDto.setLastName("Doe");
 
@@ -77,7 +77,7 @@ class UserServiceTest {
 
         verify(mockUserRepository, times(1)).save(any(UserEntity.class));
 
-        assertEquals(userDto.getUserId(), actualUserDto.getUserId());
+        assertEquals(userDto.getBatchNumber(), actualUserDto.getBatchNumber());
         assertEquals(userDto.getLastName(), actualUserDto.getLastName());
         assertEquals(userDto.getFirstName(), actualUserDto.getFirstName());
     }
@@ -98,41 +98,41 @@ class UserServiceTest {
 
         assertEquals(2, usersOrderByLastName.size());
 
-        assertEquals(userEntity.getBatchNumber(),usersOrderByLastName.get(0).getUserId());
+        assertEquals(userEntity.getBatchNumber(),usersOrderByLastName.get(0).getBatchNumber());
     }
 
     @Test
     void findUserByIdWithResult() {
 
-        when(mockUserRepository.findByUserId("123")).thenReturn(userEntity);
+        when(mockUserRepository.findByBatchNumber("123")).thenReturn(userEntity);
 
         Optional<UserDto> userByIdOptional = userService.findBatchNumber("123");
 
-        verify(mockUserRepository, times(1)).findByUserId("123");
+        verify(mockUserRepository, times(1)).findByBatchNumber("123");
 
         assertTrue(userByIdOptional.isPresent());
-        assertEquals("123", userByIdOptional.get().getUserId());
+        assertEquals("123", userByIdOptional.get().getBatchNumber());
     }
 
     @Test
     void findUserByIdWithNoResult() {
 
-        when(mockUserRepository.findByUserId("123")).thenReturn(null);
+        when(mockUserRepository.findByBatchNumber("123")).thenReturn(null);
 
         Optional<UserDto> userByIdOptional = userService.findBatchNumber("123");
 
-        verify(mockUserRepository, times(1)).findByUserId("123");
+        verify(mockUserRepository, times(1)).findByBatchNumber("123");
 
         assertFalse(userByIdOptional.isPresent());
     }
 
     @Test
     void deleteByUserId() {
-        when(mockUserRepository.deleteDistinctByUserId("123")).thenReturn(1);
+        when(mockUserRepository.deleteDistinctByBatchNumber("123")).thenReturn(1);
 
         int result = userService.deleteByUserId("123");
 
-        verify(mockUserRepository, times(1)).deleteDistinctByUserId("123");
+        verify(mockUserRepository, times(1)).deleteDistinctByBatchNumber("123");
 
         assertEquals(1, result);
     }

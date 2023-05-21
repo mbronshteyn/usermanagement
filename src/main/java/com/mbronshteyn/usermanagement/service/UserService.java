@@ -43,10 +43,12 @@ public class UserService {
         List<ClubEntity> clubEntities = new ArrayList<>();
         ClubEntity club = new ClubEntity();
         club.setName("new club");
+        club.setUsers(userEntity);
         clubEntities.add(club);
 
         ClubEntity clubOne = new ClubEntity();
         clubOne.setName("new club one");
+        clubOne.setUsers(userEntity);
         clubEntities.add(clubOne);
 
         userEntity.setClubs(clubEntities);
