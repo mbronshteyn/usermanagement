@@ -2,6 +2,9 @@
 
 Sample project to work with SpringBoot REST controllers, Bean Mapping libraries, Spring Data JPA and in-memory h2 database.
 
+## Spring Data JPA
+The project shows how to use One-To-Many and Many-To-One relations. User object has one to many relation to Club.
+
 ## Postman
 The project has postman collection json file which can be used to trigger endpoints.  I have configured Spring Security Basic Authentication.  The username/password are in local properties file.  Just in case they are root/root.
 
