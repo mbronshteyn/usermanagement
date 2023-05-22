@@ -58,7 +58,7 @@ public class UserController {
 
     @GetMapping(path = "/{id}", produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<UserRest> getUserById(@PathVariable String id) {
-        log.info("getUserById: {}", id);
+        log.info("getUserByBatchNumber: {}", id);
         Optional<UserDto> userDto = userService.findBatchNumber(id);
         return userDto.map(dto -> ResponseEntity.ok(beanMapper.map(dto, UserRest.class)))
                 .orElseGet(() -> ResponseEntity.notFound().build());

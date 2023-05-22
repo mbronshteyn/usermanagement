@@ -30,6 +30,7 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
     implementation 'ch.qos.logback:logback-classic'
+    implementation 'org.springframework.boot:spring-boot-devtools'
 
     implementation 'org.springdoc:springdoc-openapi-ui:1.7.0'
 
