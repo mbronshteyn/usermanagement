@@ -1,33 +1,40 @@
 package com.mbronshteyn.usermanagement.service;
 
 import com.mbronshteyn.usermanagement.entity.ClubEntity;
+import com.mbronshteyn.usermanagement.entity.GuestEntity;
 import com.mbronshteyn.usermanagement.entity.UserEntity;
 import com.mbronshteyn.usermanagement.model.dto.ClubDto;
 import com.mbronshteyn.usermanagement.model.dto.UserDto;
+import com.mbronshteyn.usermanagement.repository.GuestRepository;
 import com.mbronshteyn.usermanagement.repository.UserRepository;
 import io.beanmapper.BeanMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Component
+@Service
 @Slf4j
 public class UserService {
 
     private UserRepository userRepository;
 
+    private GuestRepository guestRepository;
+
     private BeanMapper beanMapper;
 
-    public UserService(UserRepository userRepository, BeanMapper beanMapper) {
+    public UserService(UserRepository userRepository, GuestRepository guestRepository, BeanMapper beanMapper) {
         this.userRepository = userRepository;
+        this.guestRepository = guestRepository;
         this.beanMapper = beanMapper;
     }
 
-    protected final  void setBeanMapper(BeanMapper beanMapper) {
+    protected final void setBeanMapper(BeanMapper beanMapper) {
         this.beanMapper = beanMapper;
     }
 
@@ -42,10 +49,11 @@ public class UserService {
         UserEntity userEntity = beanMapper.map(userDto, UserEntity.class);
 
         List<ClubDto> clubs = userDto.getClubs();
+        List<ClubEntity> clubEntityList = null;
         if (clubs != null && !clubs.isEmpty()) {
-            List<ClubEntity> clubEntityList = clubs.stream()
+            clubEntityList = clubs.stream()
                     .map(clubDto -> {
-                        ClubEntity clubEntity =  beanMapper.map(clubDto, ClubEntity.class);
+                        ClubEntity clubEntity = beanMapper.map(clubDto, ClubEntity.class);
                         clubEntity.setUsers(userEntity);
                         return clubEntity;
                     })
@@ -54,6 +62,23 @@ public class UserService {
         }
 
         UserEntity savedEntity = userRepository.save(userEntity);
+
+        ////////////
+        ClubEntity clubEntity = new ClubEntity();
+        clubEntity.setName("LA Fitness");
+        List<ClubEntity> guestClubsList = new ArrayList<>();
+        guestClubsList.add(clubEntity);
+
+        GuestEntity guestEntity = new GuestEntity();
+        guestEntity.setBatchNumber("123");
+        guestEntity.setFirstName("Joe");
+        guestEntity.setLastName("Doe");
+        guestEntity.setClubs(guestClubsList);
+        clubEntity.setGuests(guestEntity);
+
+        guestRepository.save(guestEntity);
+
+        //////////
 
         return beanMapper.map(savedEntity, UserDto.class);
     }

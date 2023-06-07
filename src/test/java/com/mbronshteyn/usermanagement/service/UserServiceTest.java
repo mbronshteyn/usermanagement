@@ -1,7 +1,9 @@
 package com.mbronshteyn.usermanagement.service;
 
+import com.mbronshteyn.usermanagement.entity.GuestEntity;
 import com.mbronshteyn.usermanagement.entity.UserEntity;
 import com.mbronshteyn.usermanagement.model.dto.UserDto;
+import com.mbronshteyn.usermanagement.repository.GuestRepository;
 import com.mbronshteyn.usermanagement.repository.UserRepository;
 import io.beanmapper.BeanMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -31,6 +33,9 @@ class UserServiceTest {
     @Mock
     UserRepository mockUserRepository;
 
+    @Mock
+    GuestRepository mockGuestRepository;
+
     @InjectMocks
     UserService userService;
 
@@ -39,6 +44,7 @@ class UserServiceTest {
 
     UserDto userDto;
     UserEntity userEntity;
+    GuestEntity guestEntity;
     UserEntity userEntityB;
 
     @BeforeEach
@@ -57,6 +63,11 @@ class UserServiceTest {
         userEntity.setFirstName("Joe");
         userEntity.setLastName("Doe");
 
+        guestEntity = new GuestEntity();
+        guestEntity.setBatchNumber("123");
+        guestEntity.setFirstName("Joe");
+        guestEntity.setLastName("Doe");
+
         userEntityB = new UserEntity();
         userEntityB.setBatchNumber("1234");
         userEntityB.setFirstName("Jane");
@@ -72,6 +83,9 @@ class UserServiceTest {
 
         Mockito.when(mockUserRepository.save(any(UserEntity.class)))
                 .thenReturn(userEntity);
+
+        Mockito.when(mockGuestRepository.save(any(GuestEntity.class)))
+                .thenReturn(guestEntity);
 
         UserDto actualUserDto = userService.createUser(userDto);
 

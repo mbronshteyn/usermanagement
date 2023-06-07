@@ -1,6 +1,8 @@
 package com.mbronshteyn.usermanagement.entity;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -20,5 +22,9 @@ public class ClubEntity {
     @ManyToOne
     @JoinColumn(name = "users_id")
     private UserEntity users;
+
+    @ManyToOne
+    @JoinColumn(name = "guests_id")
+    private GuestEntity guests;
 
 }
