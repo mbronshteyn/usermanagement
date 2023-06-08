@@ -1,11 +1,10 @@
 package com.mbronshteyn.usermanagement.service;
 
-import com.mbronshteyn.usermanagement.entity.ClubEntity;
-import com.mbronshteyn.usermanagement.entity.GuestEntity;
-import com.mbronshteyn.usermanagement.entity.UserEntity;
+import com.mbronshteyn.usermanagement.entity.*;
 import com.mbronshteyn.usermanagement.model.dto.ClubDto;
 import com.mbronshteyn.usermanagement.model.dto.UserDto;
 import com.mbronshteyn.usermanagement.repository.GuestRepository;
+import com.mbronshteyn.usermanagement.repository.ThemeRepository;
 import com.mbronshteyn.usermanagement.repository.UserRepository;
 import io.beanmapper.BeanMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +25,15 @@ public class UserService {
 
     private GuestRepository guestRepository;
 
+    private ThemeRepository themeRepository;
+
     private BeanMapper beanMapper;
 
-    public UserService(UserRepository userRepository, GuestRepository guestRepository, BeanMapper beanMapper) {
+    public UserService(UserRepository userRepository, GuestRepository guestRepository,
+                       ThemeRepository themeRepository, BeanMapper beanMapper) {
         this.userRepository = userRepository;
         this.guestRepository = guestRepository;
+        this.themeRepository = themeRepository;
         this.beanMapper = beanMapper;
     }
 
@@ -47,6 +50,8 @@ public class UserService {
     public UserDto createUser(UserDto userDto) {
 
         UserEntity userEntity = beanMapper.map(userDto, UserEntity.class);
+        ThemeEntity rockThemeEntity = new ThemeEntity();
+        rockThemeEntity.setThemeEnum(ThemeEnum.ROCK);
 
         List<ClubDto> clubs = userDto.getClubs();
         List<ClubEntity> clubEntityList = null;
@@ -55,6 +60,7 @@ public class UserService {
                     .map(clubDto -> {
                         ClubEntity clubEntity = beanMapper.map(clubDto, ClubEntity.class);
                         clubEntity.setUsers(userEntity);
+                        clubEntity.setTheme(rockThemeEntity);
                         return clubEntity;
                     })
                     .collect(Collectors.toList());
@@ -76,6 +82,12 @@ public class UserService {
         guestEntity.setClubs(guestClubsList);
         clubEntity.setGuests(guestEntity);
 
+
+        ThemeEntity themeEntity = new ThemeEntity();
+        themeEntity.setThemeEnum(ThemeEnum.DISCO);
+
+        clubEntity.setTheme(themeEntity);
+        themeEntity.setClubs(guestClubsList);
         guestRepository.save(guestEntity);
 
         //////////

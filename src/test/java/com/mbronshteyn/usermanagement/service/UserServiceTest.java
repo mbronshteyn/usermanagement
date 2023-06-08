@@ -1,9 +1,12 @@
 package com.mbronshteyn.usermanagement.service;
 
 import com.mbronshteyn.usermanagement.entity.GuestEntity;
+import com.mbronshteyn.usermanagement.entity.ThemeEntity;
+import com.mbronshteyn.usermanagement.entity.ThemeEnum;
 import com.mbronshteyn.usermanagement.entity.UserEntity;
 import com.mbronshteyn.usermanagement.model.dto.UserDto;
 import com.mbronshteyn.usermanagement.repository.GuestRepository;
+import com.mbronshteyn.usermanagement.repository.ThemeRepository;
 import com.mbronshteyn.usermanagement.repository.UserRepository;
 import io.beanmapper.BeanMapper;
 import org.junit.jupiter.api.AfterEach;
@@ -36,6 +39,9 @@ class UserServiceTest {
     @Mock
     GuestRepository mockGuestRepository;
 
+    @Mock
+    ThemeRepository mockThemeRepository;
+
     @InjectMocks
     UserService userService;
 
@@ -45,10 +51,16 @@ class UserServiceTest {
     UserDto userDto;
     UserEntity userEntity;
     GuestEntity guestEntity;
+
+    ThemeEntity themeEntity;
     UserEntity userEntityB;
+
 
     @BeforeEach
     void setUp() {
+
+        themeEntity = new ThemeEntity();
+        themeEntity.setThemeEnum(ThemeEnum.DISCO);
 
         // workaround to get bean mapper into user service
         userService.setBeanMapper(beanMapper);
@@ -87,6 +99,9 @@ class UserServiceTest {
         Mockito.when(mockGuestRepository.save(any(GuestEntity.class)))
                 .thenReturn(guestEntity);
 
+//        Mockito.when(mockThemeRepository.save(any(ThemeEntity.class)))
+//                .thenReturn(themeEntity);
+
         UserDto actualUserDto = userService.createUser(userDto);
 
         verify(mockUserRepository, times(1)).save(any(UserEntity.class));
@@ -112,7 +127,7 @@ class UserServiceTest {
 
         assertEquals(2, usersOrderByLastName.size());
 
-        assertEquals(userEntity.getBatchNumber(),usersOrderByLastName.get(0).getBatchNumber());
+        assertEquals(userEntity.getBatchNumber(), usersOrderByLastName.get(0).getBatchNumber());
     }
 
     @Test

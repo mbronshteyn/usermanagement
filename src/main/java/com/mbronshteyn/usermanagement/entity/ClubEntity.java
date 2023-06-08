@@ -27,4 +27,8 @@ public class ClubEntity {
     @JoinColumn(name = "guests_id")
     private GuestEntity guests;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "themes_id")
+    private ThemeEntity theme;
+
 }
