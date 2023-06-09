@@ -60,7 +60,7 @@ class UserServiceTest {
     void setUp() {
 
         themeEntity = new ThemeEntity();
-        themeEntity.setThemeEnum(ThemeEnum.DISCO);
+        themeEntity.setName(ThemeEnum.DISCO);
 
         // workaround to get bean mapper into user service
         userService.setBeanMapper(beanMapper);

@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @Getter
@@ -15,10 +14,8 @@ import java.util.List;
 @Table(name = "themes")
 public class ThemeEntity implements Serializable {
 
-    @OneToMany(mappedBy = "theme", cascade = CascadeType.ALL)
-    List<ClubEntity> clubs;
     @Enumerated(EnumType.STRING)
-    ThemeEnum themeEnum;
+    ThemeEnum name;
     @Id
     @GeneratedValue
     private long id;

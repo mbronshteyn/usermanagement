@@ -51,7 +51,7 @@ public class UserService {
 
         UserEntity userEntity = beanMapper.map(userDto, UserEntity.class);
         ThemeEntity rockThemeEntity = new ThemeEntity();
-        rockThemeEntity.setThemeEnum(ThemeEnum.ROCK);
+        rockThemeEntity.setName(ThemeEnum.ROCK);
 
         List<ClubDto> clubs = userDto.getClubs();
         List<ClubEntity> clubEntityList = null;
@@ -84,10 +84,10 @@ public class UserService {
 
 
         ThemeEntity themeEntity = new ThemeEntity();
-        themeEntity.setThemeEnum(ThemeEnum.DISCO);
+        themeEntity.setName(ThemeEnum.DISCO);
 
         clubEntity.setTheme(themeEntity);
-        themeEntity.setClubs(guestClubsList);
+        //     themeEntity.setClubs(guestClubsList);
         guestRepository.save(guestEntity);
 
         //////////
