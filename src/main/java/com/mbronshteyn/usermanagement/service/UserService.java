@@ -1,6 +1,9 @@
 package com.mbronshteyn.usermanagement.service;
 
-import com.mbronshteyn.usermanagement.entity.*;
+import com.mbronshteyn.usermanagement.entity.ClubEntity;
+import com.mbronshteyn.usermanagement.entity.ThemeEntity;
+import com.mbronshteyn.usermanagement.entity.ThemeEnum;
+import com.mbronshteyn.usermanagement.entity.UserEntity;
 import com.mbronshteyn.usermanagement.model.dto.ClubDto;
 import com.mbronshteyn.usermanagement.model.dto.UserDto;
 import com.mbronshteyn.usermanagement.repository.GuestRepository;
@@ -12,7 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,11 +23,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    private GuestRepository guestRepository;
+    private final GuestRepository guestRepository;
 
-    private ThemeRepository themeRepository;
+    private final ThemeRepository themeRepository;
 
     private BeanMapper beanMapper;
 
@@ -68,29 +70,6 @@ public class UserService {
         }
 
         UserEntity savedEntity = userRepository.save(userEntity);
-
-        ////////////
-        ClubEntity clubEntity = new ClubEntity();
-        clubEntity.setName("LA Fitness");
-        List<ClubEntity> guestClubsList = new ArrayList<>();
-        guestClubsList.add(clubEntity);
-
-        GuestEntity guestEntity = new GuestEntity();
-        guestEntity.setBatchNumber("123");
-        guestEntity.setFirstName("Joe");
-        guestEntity.setLastName("Doe");
-        guestEntity.setClubs(guestClubsList);
-        clubEntity.setGuests(guestEntity);
-
-
-        ThemeEntity themeEntity = new ThemeEntity();
-        themeEntity.setName(ThemeEnum.DISCO);
-
-        clubEntity.setTheme(themeEntity);
-        //     themeEntity.setClubs(guestClubsList);
-        guestRepository.save(guestEntity);
-
-        //////////
 
         return beanMapper.map(savedEntity, UserDto.class);
     }

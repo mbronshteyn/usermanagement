@@ -96,9 +96,6 @@ class UserServiceTest {
         Mockito.when(mockUserRepository.save(any(UserEntity.class)))
                 .thenReturn(userEntity);
 
-        Mockito.when(mockGuestRepository.save(any(GuestEntity.class)))
-                .thenReturn(guestEntity);
-
         UserDto actualUserDto = userService.createUser(userDto);
 
         verify(mockUserRepository, times(1)).save(any(UserEntity.class));
