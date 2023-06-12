@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ThemeRepository extends JpaRepository<ThemeEntity, Long> {
-    @Query(value = "select * from themes m where m.name = ?1", nativeQuery = true)
+    @Query(value = "select * from themes th where th.name = ?1", nativeQuery = true)
     ThemeEntity findByName(String name);
 }
