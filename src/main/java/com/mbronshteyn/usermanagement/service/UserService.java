@@ -52,7 +52,7 @@ public class UserService {
     public UserDto createUser(UserDto userDto) {
 
         UserEntity userEntity = beanMapper.map(userDto, UserEntity.class);
-        ThemeEntity rockThemeEntity = themeRepository.findByName(ThemeEnum.ROCK.name());
+        ThemeEntity rockThemeEntity = themeRepository.findByName(ThemeEnum.ROCK);
         if (rockThemeEntity == null) {
             rockThemeEntity = new ThemeEntity();
             rockThemeEntity.setName(ThemeEnum.ROCK);

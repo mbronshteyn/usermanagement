@@ -45,7 +45,7 @@ public class GuestService {
 
         GuestEntity guestEntity = beanMapper.map(guestDto, GuestEntity.class);
 
-        ThemeEntity discoThemeEntity = themeRepository.findByName(ThemeEnum.DISCO.name());
+        ThemeEntity discoThemeEntity = themeRepository.findByName(ThemeEnum.DISCO);
         if (discoThemeEntity == null) {
             discoThemeEntity = new ThemeEntity();
             discoThemeEntity.setName(ThemeEnum.DISCO);
