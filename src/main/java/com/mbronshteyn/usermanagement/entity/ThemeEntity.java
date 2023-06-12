@@ -11,11 +11,14 @@ import java.io.Serializable;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@Table(name = "themes")
+@Table(name = "themes", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"name"})
+})
 public class ThemeEntity implements Serializable {
 
     @Enumerated(EnumType.STRING)
     ThemeEnum name;
+
     @Id
     @GeneratedValue
     private long id;

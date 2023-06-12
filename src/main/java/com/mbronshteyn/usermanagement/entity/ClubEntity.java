@@ -10,7 +10,9 @@ import javax.persistence.*;
 @Setter
 @RequiredArgsConstructor
 @Entity
-@Table(name = "clubs")
+@Table(name = "clubs", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"name"})
+})
 public class ClubEntity {
     @Id
     @GeneratedValue

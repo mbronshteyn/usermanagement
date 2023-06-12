@@ -52,8 +52,12 @@ public class UserService {
     public UserDto createUser(UserDto userDto) {
 
         UserEntity userEntity = beanMapper.map(userDto, UserEntity.class);
-        ThemeEntity rockThemeEntity = new ThemeEntity();
-        rockThemeEntity.setName(ThemeEnum.ROCK);
+        ThemeEntity rockThemeEntity = themeRepository.findByName(ThemeEnum.ROCK.name());
+        if (rockThemeEntity == null) {
+            rockThemeEntity = new ThemeEntity();
+            rockThemeEntity.setName(ThemeEnum.ROCK);
+        }
+        final ThemeEntity finalThemeEntity = rockThemeEntity;
 
         List<ClubDto> clubs = userDto.getClubs();
         List<ClubEntity> clubEntityList = null;
@@ -62,7 +66,7 @@ public class UserService {
                     .map(clubDto -> {
                         ClubEntity clubEntity = beanMapper.map(clubDto, ClubEntity.class);
                         clubEntity.setUsers(userEntity);
-                        clubEntity.setTheme(rockThemeEntity);
+                        clubEntity.setTheme(finalThemeEntity);
                         return clubEntity;
                     })
                     .collect(Collectors.toList());
