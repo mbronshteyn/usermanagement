@@ -12,11 +12,11 @@ import io.beanmapper.BeanMapper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
@@ -30,8 +30,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class)
+@RunWith(MockitoJUnitRunner.class)
 class UserServiceTest {
+
+    @InjectMocks
+    UserService userService;
 
     @Mock
     UserRepository mockUserRepository;
@@ -41,9 +44,6 @@ class UserServiceTest {
 
     @Mock
     ThemeRepository mockThemeRepository;
-
-    @InjectMocks
-    UserService userService;
 
     @Autowired
     BeanMapper beanMapper;
