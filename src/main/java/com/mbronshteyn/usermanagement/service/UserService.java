@@ -69,7 +69,7 @@ public class UserService {
                         clubEntity.setTheme(finalThemeEntity);
                         return clubEntity;
                     })
-                    .collect(Collectors.toList());
+                    .toList();
             userEntity.setClubs(clubEntityList);
         }
 

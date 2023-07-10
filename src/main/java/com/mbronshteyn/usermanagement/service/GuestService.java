@@ -64,7 +64,7 @@ public class GuestService {
 
 
         List<ClubEntity> clubEntityList = null;
-        if (clubs != null && !clubs.isEmpty()) {
+        if (!clubs.isEmpty()) {
             clubEntityList = clubs.stream()
                     .map(clubDto -> {
                         ClubEntity clubEntity = beanMapper.map(clubDto, ClubEntity.class);
@@ -72,7 +72,7 @@ public class GuestService {
                         clubEntity.setTheme(finalThemeEntity);
                         return clubEntity;
                     })
-                    .collect(Collectors.toList());
+                    .toList();
             guestEntity.setClubs(clubEntityList);
         }
 

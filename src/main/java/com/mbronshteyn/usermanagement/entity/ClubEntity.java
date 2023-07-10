@@ -29,7 +29,7 @@ public class ClubEntity {
     @JoinColumn(name = "guests_id")
     private GuestEntity guests;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "themes_id")
     private ThemeEntity theme;
 
