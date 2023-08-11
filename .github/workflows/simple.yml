@@ -26,8 +26,5 @@ jobs:
         run: |
            node -v
            npm -v
-      - name: python command
-        run: |
-           import platform
-           print
-           (platform.processor())
+      - name: Display Python version
+        run: python -c "import sys; print(sys.version)"
